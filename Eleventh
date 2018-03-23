@@ -1,0 +1,91 @@
+#include <stdio.h>
+#include <math.h>
+#include <errno.h>
+#include <ctype.h>
+#include <string.h>
+
+/*
+ * NOTE
+ * While compiling with GCC, append '-lm' for compilation
+ * ex : gcc -o binary_to_decimal binary_to_decimal.c -lm
+ * or else it might generate error given below
+ * " undefined reference to 'pow' " 
+ * reason being including math.h brings in the declaration of the various functions 
+ * and not their definition. The def is present in the math library libm.a
+ */
+
+/* Function definitions */
+int number_only(char *);
+long long convert_binary_to_decimal(long);
+
+
+/* Beginning of the main() */
+int main() {
+
+    char user_binary_input[64];
+    long decimal_value;
+
+    /* Display appropriate welcome message to user */
+    printf("\t\tBINARY to DECIMAL Conversion\n\n");
+    printf("\nEnter the Binary Number\n");
+
+    /* Take input in char array to perform conditional checks */
+    scanf("%s", user_binary_input);
+
+    /* Check if the input is in binary format */
+    if(! number_only(user_binary_input)) {
+        printf("\nEntered Value is not in Binary Format!\n");
+        return -1;
+    }
+
+    /* Convert the character array to long long value */
+    sscanf(user_binary_input, "%ld", &decimal_value);
+    
+    printf("\nConversion of Binary value %s, to decimal value is : %lld \n", 
+           user_binary_input, convert_binary_to_decimal(decimal_value));
+
+    return 0;
+}
+
+/*
+ * A 'C' function to check if the character 
+ * array passed is in binary form or not,
+ * if so, return 1, else return 0
+ */
+int number_only(char *input) {
+    while(*input) {
+        if(! (*input == '1' || *input == '0'))
+            return 0;
+        *input++;
+    }
+    return 1;
+}
+
+/*
+ * A 'C' function to convert
+ * given long Binary value to 
+ * decimal Value
+ */
+long long convert_binary_to_decimal(long n)
+{
+    int i = 0;
+    int remainder = 0;
+   
+    /* 
+     * Reason to use long long variable is 
+     * because max output of 64 bit binary number 
+     * which is coming from argument of this function
+     * can only be stored in long long variable 
+     */
+    long long decimal_number = 0;
+
+    /* Convert Binary value to Decimal value*/
+    while (n != 0)
+    {
+        remainder = n % 10;
+        n /= 10;
+        decimal_number += remainder * pow(2,i);
+        ++i;
+    }
+    return decimal_number;
+}
